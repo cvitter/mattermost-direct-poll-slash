@@ -17,7 +17,7 @@ The following is an overview of the planned functionality of this integration.
    ```
    The slash commands takes three arguments separated by the pipe character (``|``): The question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
 
-2. The system creates a database record for the poll question with the following fields:
+2. The system creates a database record for the poll question with the following fields: question_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id,
 
 3. The system returns an ephemeral message to the user asking them to confirm that they wish to run the poll that they created.
 
