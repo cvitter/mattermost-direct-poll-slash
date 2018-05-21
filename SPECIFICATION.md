@@ -22,7 +22,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    ```
    or
    ```
-   /direct-poll Have you completed your monthly HR training yet?|Yes/No/Maybe|Channel Name
+   /direct-poll create|Have you completed your monthly HR training yet?|Yes/No/Maybe|Channel Name
    ```
    The slash commands takes four arguments separated by the pipe character (``|``): The command to execute (``create``), the question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
 
