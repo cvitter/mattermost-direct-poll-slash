@@ -7,7 +7,7 @@
 mysql -u root -p
 ```
 
-2. Create the ``dpuser`` for the Direct-Poll application:
+2. Create the ``dpuser`` user for the Direct-Poll application:
 
 ```
 mysql> create user 'dpuser'@'%' identified by 'dpuser-password';
