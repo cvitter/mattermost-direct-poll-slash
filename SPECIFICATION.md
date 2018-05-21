@@ -13,7 +13,7 @@ The following is an overview of the planned functionality of this integration.
    ```
    The slash commands takes three arguments separated by the pipe character (``|``): The question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
 
-2. The system creates a database record in the ``poll`` table with the following fields: ``question_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id, published, closed``
+2. The system creates a database record in the ``poll`` table with the following fields: ``question_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id, published, closed``.
 
 3. The system returns an ephemeral with interactive message buttons asking the user to confirm that they wish to run the poll that they created:
 
@@ -37,5 +37,30 @@ The following is an overview of the planned functionality of this integration.
    Alert: The poll has been canceled.
    ```
 
-5. 
+5. If the user selects ``Yes`` the system:
+
+   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, answer, votes, timestamp`` (where the ``votes`` field is set to ``0`` intitially);
+   
+   b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
+   
+   c. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, user_id, answer, timestamp`` (where the ``answer`` field is set to ``null`` intitially);
+   
+   d. Sends a message with a message attachment and interactive message buttons via incoming webhook (https://docs.mattermost.com/developer/webhooks-incoming.html) to each user in the ``poll_answer`` table for the poll:
+   
+      ```
+      Please answer the following poll question:
+   
+      [Question]
+
+      [Answer], [Answer], ...
+      ```
+   
+   e. Returns an ephemeral message alerting the user that the poll has been published.
+
+      ```
+      Alert: The poll has been published. You can view the results for the poll using the 
+      /direct-poll-results [pollid] slash command
+      ```
+
+
 
