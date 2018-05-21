@@ -39,7 +39,7 @@ The following is an overview of the planned functionality of this integration.
 
 5. If the user selects ``Yes`` the system:
 
-   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, answer, votes, timestamp`` (where the ``votes`` field is set to ``0`` intitially);
+   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, answer, votes, timestamp`` (where the ``votes`` field is set to ``0`` intitially);
    
    b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
    
@@ -47,20 +47,20 @@ The following is an overview of the planned functionality of this integration.
    
    d. Sends a message with a message attachment and interactive message buttons via incoming webhook (https://docs.mattermost.com/developer/webhooks-incoming.html) to each user in the ``poll_answer`` table for the poll:
    
-      ```
-      Please answer the following poll question:
+   ```
+   Please answer the following poll question:
    
-      [Question]
+   [Question]
 
-      [Answer], [Answer], ...
-      ```
+   [Answer], [Answer], ...
+   ```
    
    e. Returns an ephemeral message alerting the user that the poll has been published.
 
-      ```
-      Alert: The poll has been published. You can view the results for the poll using the 
-      /direct-poll-results [pollid] slash command
-      ```
+   ```
+   Alert: The poll has been published. You can view the results for the poll using the 
+   /direct-poll-results [pollid] slash command
+   ```
 
 
 
