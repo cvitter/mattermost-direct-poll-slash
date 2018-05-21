@@ -1,17 +1,23 @@
-# Mattermost - Direct Poll Slash Command Specification/Use Case
+# Specification/Use Case
 
 The following is an overview of the planned functionality of this integration.
+
+# Getting Help with the Slash Command
+
+Markdown formatted help for the slash command is available by executing the ``/direct-poll`` command without arguments.
+
+# Creating and Publishing a Poll
 
 1. A user creates a poll using the ``direct-poll`` slash command:
 
    ```
-   /direct-poll Have you completed your monthly HR training yet?|Yes/No/Maybe
+   /direct-poll create|Have you completed your monthly HR training yet?|Yes/No/Maybe
    ```
    or
    ```
    /direct-poll Have you completed your monthly HR training yet?|Yes/No/Maybe|Channel Name
    ```
-   The slash commands takes three arguments separated by the pipe character (``|``): The question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
+   The slash commands takes four arguments separated by the pipe character (``|``): The command to execute (``create``), the question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
 
 2. The system creates a database record in the ``poll`` table with the following fields: ``question_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id, published, closed``.
 
@@ -61,6 +67,33 @@ The following is an overview of the planned functionality of this integration.
    Alert: The poll has been published. You can view the results for the poll using the 
    /direct-poll-results [pollid] slash command
    ```
+
+# Responding to a Poll
+
+
+# Viewing a List of All Polls
+
+Users can view a list of all polls by executing the slash command with the ``list`` command: ``/direct-poll list``.
+
+**Note**: In intial release of this project all users will be able to execute this command.
+
+# Viewing the Results of a Poll
+
+Users can view the results of a poll by executing the slash command with the ``view`` command and poll ID separated by the pipe character (``|``): ``/direct-poll view|[pollid]``.
+
+**Note**: In intial release of this project all users will be able to execute this command.
+
+# Closing a Poll
+
+Closing a poll stops the process of updating the ``poll_answer`` table when users vote via interactive message buttons. A user who attempts to vote in a poll after it has closed with receive a message notifying them that the poll has closed and that their vote did not count.
+
+The user who created a poll and close the poll by executing the slash command with the ``close`` command and poll ID separated by the pipe character (``|``): ``/direct-poll close|[pollid]``.
+
+**Note**: In intial release of this project only the user who created the poll will be able to close the poll.
+
+
+
+
 
 
 
