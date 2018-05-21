@@ -10,9 +10,8 @@ jenkins.py
 
 def readConfig():
     """
-    
+    Read the config.json file and populate global variables
     """
-    
     # Create global configuration variables
     global dbUrl, dbUsername, dbPassword
     # Load the file contents as JSON
@@ -37,23 +36,32 @@ def getHelp():
 Flask application below
 """
 
-#readConfig()
+readConfig()
 
 app = Flask(__name__)
  
 @app.route( "/direct-poll", methods = [ 'POST' ] )
 def slashCommand():
     """
-    Get the text/body of the slash command send by the user
+    Get the text/body of the slash command sent by the user
     """
     paramstring = ""
     if len(request.form) > 0:
         paramstring = request.form["text"]
     
     response_type = "ephemeral"
+    
     output = ""
     if len(paramstring) > 0:
-        output = ""
+        
+       if paramstring.find("|") != -1:
+           output = ""
+       else:
+            if paramstring == "list":
+                output = ""
+            else:
+                output = getHelp()
+
         
     else:
         output = getHelp()
