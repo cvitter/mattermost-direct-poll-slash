@@ -77,6 +77,41 @@ Markdown formatted help for the slash command is available by executing the ``/d
 
 # Responding to a Poll
 
+Polls will appear to users as direct messages:
+
+   ```
+   Please answer the following poll question:
+   
+   [Question]
+
+   [Answer], [Answer], ...
+   ```
+
+Where the ``[Answer]`` fields are interactive message buttons. When a user clicks on one of the buttons it sends a JSON payload to the URL specified in the attachment (see: https://docs.mattermost.com/developer/interactive-message-buttons.html#button-options). When the system receives the response it will:
+
+1. Check the ``poll`` table to verify that they poll is still open.
+
+2. If the poll is closed the system will return an ephemeral message telling the user that the poll is closed:
+
+   ```
+   Alert: The poll is closed and no longer accepting answers.
+   ```
+
+3. If the poll is open the system will:
+
+   a. Check the ``poll_answer`` table to retrieve the current answer if the user has previously responded to the poll;
+   
+   b. If a previous answer exists the system will update the ``poll_result`` table to decrement one from the old answer;
+   
+   c. Update the ``poll_answer`` table for the user with the answer that they selected;
+   
+   d. Update the ``poll_result`` table for the answer selected incrementing the number by one;
+   
+   e. Return the following ephemeral message to the user:
+
+   ```
+   Alert: Your answer has been recorded.
+   ```
 
 # Viewing a List of All Polls
 
