@@ -2,3 +2,4 @@
 
 To get help for this slash command call the slash command with no parameters (i.e. `/direct-poll`) or using the `help` 
 parameter (i.e. `/direct-poll help`).
+
