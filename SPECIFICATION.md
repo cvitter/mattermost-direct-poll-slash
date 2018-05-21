@@ -5,9 +5,9 @@ The following is an overview of the planned functionality of this integration:
 * [Getting Help with the Slash Command](#getting-help-with-the-slash-command)
 * [Creating and Publishing a Poll](#creating-and-publishing-a-poll)
 * [Responding to a Poll](#responding-to-a-poll)
-* [Viewing a List of All Polls](viewing-a-list-of-all-polls)
-* [Viewing the Results of a Poll](viewing-the-results-of-a-poll)
-* [Closing a Poll](closing-a-poll)
+* [Viewing a List of All Polls](#viewing-a-list-of-all-polls)
+* [Viewing the Results of a Poll](#viewing-the-results-of-a-poll)
+* [Closing a Poll](#closing-a-poll)
 
 # Getting Help with the Slash Command
 
