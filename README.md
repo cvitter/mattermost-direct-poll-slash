@@ -4,6 +4,18 @@
 
 The design specification/use case for the slash command can be found here: [Specification/Use Case](SPECIFICATION.md)
 
+# Requirements
+
+In order to use this slash command on your Mattermost server you will need:
+
+* A Mattermost server on which you have permissions to add slash commands;
+* A server on which you can install and run this Python based application;
+* A MySQL database server where you can create the ``directpoll`` database and that the application can access to read and write data.
+
+If you have these three things you can proceed to the Installation and Configuration steps below.
+
+# Installation and Configuration
+
 # License
 The content in this repository is Open Source material released under the MIT License. Please see the [LICENSE](LICENSE) file for full license details.
 
