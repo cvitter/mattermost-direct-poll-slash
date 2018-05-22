@@ -54,6 +54,25 @@ Markdown formatted help for the slash command is available by executing the ``/d
 
    a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, answer, votes, timestamp`` (where the ``votes`` field is set to ``0`` intitially);
    
+   ```
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   | Field              | Type          | Null | Key | Default           | Extra          |
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   | poll_id            | int(11)       | NO   | PRI | NULL              | auto_increment |
+   | created            | timestamp     | NO   |     | CURRENT_TIMESTAMP |                |
+   | team_id            | varchar(26)   | YES  |     | NULL              |                |
+   | channel_id         | varchar(26)   | YES  |     | NULL              |                |
+   | token              | varchar(50)   | YES  |     | NULL              |                |
+   | user_id            | varchar(26)   | YES  |     | NULL              |                |
+   | user_name          | varchar(26)   | YES  |     | NULL              |                |
+   | question           | varchar(1000) | YES  |     | NULL              |                |
+   | answers            | varchar(200)  | YES  |     | NULL              |                |
+   | channel_to_poll_id | varchar(26)   | YES  |     | NULL              |                |
+   | published          | tinyint(1)    | NO   |     | 0                 |                |
+   | closed             | tinyint(1)    | NO   |     | 0                 |                |
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   ```
+   
    b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
    
    c. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, user_id, answer, timestamp`` (where the ``answer`` field is set to ``null`` intitially);
