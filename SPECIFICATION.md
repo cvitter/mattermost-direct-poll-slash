@@ -28,6 +28,25 @@ Markdown formatted help for the slash command is available by executing the ``/d
 
 2. The system creates a database record in the ``poll`` table with the following fields: ``poll_id, created, team_id, channel_id, token, user_id, user_name, question, answers, channel_to_poll_id, published, closed``.
 
+   ```
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   | Field              | Type          | Null | Key | Default           | Extra          |
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   | poll_id            | int(11)       | NO   | PRI | NULL              | auto_increment |
+   | created            | timestamp     | NO   |     | CURRENT_TIMESTAMP |                |
+   | team_id            | varchar(26)   | YES  |     | NULL              |                |
+   | channel_id         | varchar(26)   | YES  |     | NULL              |                |
+   | token              | varchar(50)   | YES  |     | NULL              |                |
+   | user_id            | varchar(26)   | YES  |     | NULL              |                |
+   | user_name          | varchar(26)   | YES  |     | NULL              |                |
+   | question           | varchar(1000) | YES  |     | NULL              |                |
+   | answers            | varchar(200)  | YES  |     | NULL              |                |
+   | channel_to_poll_id | varchar(26)   | YES  |     | NULL              |                |
+   | published          | tinyint(1)    | NO   |     | 0                 |                |
+   | closed             | tinyint(1)    | NO   |     | 0                 |                |
+   +--------------------+---------------+------+-----+-------------------+----------------+
+   ```
+
 3. The system returns an ephemeral with interactive message buttons asking the user to confirm that they wish to run the poll that they created:
 
    ```
@@ -52,25 +71,19 @@ Markdown formatted help for the slash command is available by executing the ``/d
 
 5. If the user selects ``Yes`` the system:
 
-   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, answer, votes, timestamp`` (where the ``votes`` field is set to ``0`` intitially);
-   
-   ```
-   +--------------------+---------------+------+-----+-------------------+----------------+
-   | Field              | Type          | Null | Key | Default           | Extra          |
-   +--------------------+---------------+------+-----+-------------------+----------------+
-   | poll_id            | int(11)       | NO   | PRI | NULL              | auto_increment |
-   | created            | timestamp     | NO   |     | CURRENT_TIMESTAMP |                |
-   | team_id            | varchar(26)   | YES  |     | NULL              |                |
-   | channel_id         | varchar(26)   | YES  |     | NULL              |                |
-   | token              | varchar(50)   | YES  |     | NULL              |                |
-   | user_id            | varchar(26)   | YES  |     | NULL              |                |
-   | user_name          | varchar(26)   | YES  |     | NULL              |                |
-   | question           | varchar(1000) | YES  |     | NULL              |                |
-   | answers            | varchar(200)  | YES  |     | NULL              |                |
-   | channel_to_poll_id | varchar(26)   | YES  |     | NULL              |                |
-   | published          | tinyint(1)    | NO   |     | 0                 |                |
-   | closed             | tinyint(1)    | NO   |     | 0                 |                |
-   +--------------------+---------------+------+-----+-------------------+----------------+
+   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
+ 
+   ```  
+   +----------------+--------------+------+-----+-------------------+----------------+
+   | Field          | Type         | Null | Key | Default           | Extra          |
+   +----------------+--------------+------+-----+-------------------+----------------+
+   | poll_result_id | int(11)      | NO   | PRI | NULL              | auto_increment |
+   | poll_id        | int(11)      | NO   |     | NULL              |                |
+   | created        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+   | updated        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+   | answer         | varchar(100) | YES  |     | NULL              |                |
+   | votes          | int(11)      | NO   |     | 0                 |                |
+   +----------------+--------------+------+-----+-------------------+----------------+
    ```
    
    b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);

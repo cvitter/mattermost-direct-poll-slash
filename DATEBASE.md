@@ -42,7 +42,7 @@ use directpoll;
 
 ```
 CREATE TABLE poll (
-	poll_id int NOT NULL AUTO_INCREMENT, 
+	poll_id INT NOT NULL AUTO_INCREMENT, 
 	created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
 	team_id VARCHAR(26),
 	channel_id VARCHAR(26),
@@ -52,17 +52,41 @@ CREATE TABLE poll (
 	question VARCHAR(1000),
 	answers VARCHAR(200),
 	channel_to_poll_id VARCHAR(26),
-	published boolean not null default 0, 
-	closed boolean not null default 0,
+	published BOOLEAN not null default 0, 
+	closed BOOLEAN not null default 0,
 	PRIMARY KEY (poll_id)
 );
 ```
 
-When the create statement is executed MySQL should return (not that the execution time will vary):
+When the create statement is executed MySQL should return (note that the execution time will vary):
 
 ```
 Query OK, 0 rows affected (0.14 sec)
 ```
+
+7. Create the ``poll_result_id`` table by cutting and pasting the following SQL into the MySQL commandline:
+
+```
+CREATE TABLE poll_result (
+	poll_result_id INT NOT NULL AUTO_INCREMENT,
+	poll_id INT NOT NULL, 
+	created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+	updated TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+	answer VARCHAR(100),
+	votes INT NOT NULL DEFAULT 0,
+	PRIMARY KEY (poll_result_id)
+);
+```
+
+When the create statement is executed MySQL should return (note that the execution time will vary):
+
+```
+Query OK, 0 rows affected (0.14 sec)
+```
+
+
+
+
 
 
 
