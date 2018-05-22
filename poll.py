@@ -4,7 +4,7 @@ import json
 import requests
 
 __doc__ = """\
-jenkins.py
+poll.py
 
 """
 
@@ -13,10 +13,11 @@ def readConfig():
     Read the config.json file and populate global variables
     """
     # Create global configuration variables
-    global dbUrl, dbUsername, dbPassword
+    global token, dbUrl, dbUsername, dbPassword
     # Load the file contents as JSON
     d = json.load( open('config.json') )
     # Set globals
+    token = d["security"]["token"]
     dbUrl = d["database"]["url"]
     dbUsername = d["database"]["user"]
     dbPassword = d["database"]["password"]
@@ -30,6 +31,45 @@ def getHelp():
     return responseValue
     
 
+def createReponseObject( response_type_val, content, status_number ):
+    """
+    Method that takes:
+        - response_type_val: ephemeral, in_channel 
+        - content: The text to respond with - can be formatted with markdown
+        - HTTP response code: 200 normally, 403 access denied, etc.
+    And outputs the response object to send back to Mattermost
+    """
+    data = {
+        "response_type": response_type_val,
+        "text": content,
+    }
+
+    responseObj = app.response_class(
+        response = json.dumps( data ),
+        status = status_number,
+        mimetype = 'application/json'
+    )
+    return responseObj
+
+
+def handleActions( form_data ):
+    response_type = "ephemeral"
+    
+    paramstring = form_data["text"]
+    token_sent = form_data["token"]
+    channel_id = form_data["channel_id"]
+    channel_name = form_data["channel_name"]
+    team_id = form_data["team_id"]
+    user_id = form_data["user_id"]
+    user_name = form_data["user_name"]
+
+    return createReponseObject( response_type, "Handle actions called " + user_name, 200 )
+
+
+def getPolls():
+    response_type = "ephemeral"
+
+    return createReponseObject( response_type, "Polls go here...", 200 )
 
 """
 ------------------------------------------------------------------------------------------
@@ -42,51 +82,28 @@ app = Flask(__name__)
  
 @app.route( "/direct-poll", methods = [ 'POST' ] )
 def slashCommand():
-    """
-    Get the text/body of the slash command sent by the user
-    """
-    paramstring = ""
-    if len(request.form) > 0:
-        paramstring = request.form["text"]
     
-    response_type = "ephemeral"
+    if len( request.form ) < 1:
+        # No data passed in via request.form
+        return createReponseObject("ephemeral", "Bad Request", 400)
     
-    output = ""
-    if len(paramstring) > 0:
-        
-       if paramstring.find("|") != -1:
-           output = ""
-       else:
-            if paramstring == "list":
-                output = ""
-            else:
-                output = getHelp()
+    if token <> request.form["token"]:
+        #The token in config.json must match the token sent
+        return createReponseObject("ephemeral", "Access Denied", 403)
+    
+    if len( request.form["text"] ) > 0:
+        # User passed arguments in, parse the arguments and take action
+        if request.form["text"].find( "|" ) != -1:
+           # Multiple arguments separated by | passed in, send action handler
+           return handleActions( request.form )
+        else:
+            if request.form["text"] == "list":
+                return getPolls()
 
-        
-    else:
-        output = getHelp()
-    
     """
-    Create data json object to return to Mattermost with
-        response_type = in_channel (everyone sees) or ephemeral (only sender sees)
-        text = the message to send
+    If we reach this stage simply return the help response to the user
     """
-    data = {
-        "response_type": response_type,
-        "text": output,
-    }
-    
-    """
-    Create the response object to send to Mattermost with the
-    data object written as json, 200 status, and proper mimetype
-    """
-    response = app.response_class(
-        response = json.dumps(data),
-        status = 200,
-        mimetype = 'application/json'
-    )
-    return response
- 
+    return createReponseObject( "ephemeral", getHelp(), 200 )
  
 if __name__ == '__main__':
    app.run(host='0.0.0.0', port=5005, debug = False)
