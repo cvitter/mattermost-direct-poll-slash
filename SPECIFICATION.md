@@ -88,7 +88,20 @@ Markdown formatted help for the slash command is available by executing the ``/d
    
    b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
    
-   c. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, user_id, answer, timestamp`` (where the ``answer`` field is set to ``null`` intitially);
+   c. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, created, updated, user_id, answer`` (where the ``answer`` field is set to ``null`` intitially);
+   
+   ```
+   +----------------+--------------+------+-----+-------------------+----------------+
+   | Field          | Type         | Null | Key | Default           | Extra          |
+   +----------------+--------------+------+-----+-------------------+----------------+
+   | poll_answer_id | int(11)      | NO   | PRI | NULL              | auto_increment |
+   | poll_id        | int(11)      | NO   |     | NULL              |                |
+   | created        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+   | updated        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+   | user_id        | varchar(26)  | YES  |     | NULL              |                |
+   | answer         | varchar(100) | YES  |     | NULL              |                |
+   +----------------+--------------+------+-----+-------------------+----------------+
+   ```
    
    d. Sends a message with a message attachment and interactive message buttons via incoming webhook (https://docs.mattermost.com/developer/webhooks-incoming.html) to each user in the ``poll_answer`` table for the poll:
    
