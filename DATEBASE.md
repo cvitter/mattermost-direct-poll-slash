@@ -32,6 +32,38 @@ mysql> create database directpoll;
 mysql> grant all privileges on directpoll.* to 'dpuser'@'%';
 ```
 
+5. Swith to the ``directpoll`` database:
+
+```
+use directpoll;
+```
+
+6. Create the ``poll`` table by cutting and pasting the following SQL into the MySQL commandline:
+
+```
+CREATE TABLE poll (
+	poll_id int NOT NULL AUTO_INCREMENT, 
+	created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+	team_id VARCHAR(26),
+	channel_id VARCHAR(26),
+	token VARCHAR(50),
+	user_id VARCHAR(26),
+	user_name VARCHAR(26),
+	question VARCHAR(1000),
+	answers VARCHAR(200),
+	channel_to_poll_id VARCHAR(26),
+	published boolean not null default 0, 
+	closed boolean not null default 0,
+	PRIMARY KEY (poll_id)
+);
+```
+
+When the create statement is executed MySQL should return (not that the execution time will vary):
+
+```
+Query OK, 0 rows affected (0.14 sec)
+```
+
 
 
 
