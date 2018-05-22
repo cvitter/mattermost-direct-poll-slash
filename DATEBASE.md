@@ -43,7 +43,7 @@ use directpoll;
 ```
 CREATE TABLE poll (
 	poll_id INT NOT NULL AUTO_INCREMENT, 
-	created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+	created TIMESTAMP,
 	team_id VARCHAR(26),
 	channel_id VARCHAR(26),
 	token VARCHAR(50),
@@ -64,14 +64,14 @@ When the create statement is executed MySQL should return (note that the executi
 Query OK, 0 rows affected (0.14 sec)
 ```
 
-7. Create the ``poll_result_id`` table by cutting and pasting the following SQL into the MySQL commandline:
+7. Create the ``poll_result`` table by cutting and pasting the following SQL into the MySQL commandline:
 
 ```
 CREATE TABLE poll_result (
 	poll_result_id INT NOT NULL AUTO_INCREMENT,
-	poll_id INT NOT NULL, 
-	created TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
-	updated TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+	poll_id INT NOT NULL,
+	created TIMESTAMP,
+	updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	answer VARCHAR(100),
 	votes INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (poll_result_id)
@@ -84,6 +84,25 @@ When the create statement is executed MySQL should return (note that the executi
 Query OK, 0 rows affected (0.14 sec)
 ```
 
+8. Create the ``poll_answer`` table by cutting and pasting the following SQL into the MySQL commandline:
+
+```
+CREATE TABLE poll_answer (
+	poll_answer_id INT NOT NULL AUTO_INCREMENT,
+	poll_id INT NOT NULL, 
+	created TIMESTAMP,
+	updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	user_id VARCHAR(26),
+	answer VARCHAR(100),
+	PRIMARY KEY (poll_answer_id)
+);
+```
+
+When the create statement is executed MySQL should return (note that the execution time will vary):
+
+```
+Query OK, 0 rows affected (0.14 sec)
+```
 
 
 
