@@ -26,7 +26,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    ```
    The slash commands takes four arguments separated by the pipe character (``|``): The command to execute (``create``), the question, possible answers (separated by the forward slash character (``/``), and optionally the name of the channel to poll users from if you don't wish to poll the entire team.
 
-2. The system creates a database record in the ``poll`` table with the following fields: ``question_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id, published, closed``.
+2. The system creates a database record in the ``poll`` table with the following fields: ``poll_id, timestamp, team_id, channel_id, token, user_id, user_name, questions, answers, channel_to_poll_id, published, closed``.
 
 3. The system returns an ephemeral with interactive message buttons asking the user to confirm that they wish to run the poll that they created:
 
