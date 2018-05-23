@@ -47,7 +47,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    +--------------------+---------------+------+-----+-------------------+-----------------------------+
    ```
 
-3. The system returns an ephemeral with interactive message buttons asking the user to confirm that they wish to run the poll that they created:
+3. The system returns an ephemeral  message asking the user to confirm that they wish to run the poll that they created:
 
    ```
    You want to publish a poll for all uses in [Team/Channel] that asks:
@@ -58,18 +58,20 @@ Markdown formatted help for the slash command is available by executing the ``/d
    
    [Answer], [Answer], ...
    
-   If that is correct please push the Yes button. If you need to change 
-   the poll or do not wish to publish it please click the No button 
-   and start again.
+   If that is correct and you wish to publish the poll use the following slash command to publish it:
+   /direct-poll publish|poll_id
+   
+   If you wish to cancel the poll and start over use the following slash command (note the poll will be deleted from the database:
+   /direct-poll cancel|poll_id
    ```
    
-4. If the user selects ``No`` the system deletes the record in the ``poll`` table created in ``Step 2`` above and returns an ephemeral message alerting the user that the poll has been canceled.
+4. If the user sends the ``/direct-poll cancel|poll_id`` slash command the system deletes the record in the ``poll`` table created in ``Step 2`` above and returns an ephemeral message alerting the user that the poll has been canceled.
 
    ```
    Alert: The poll has been canceled.
    ```
 
-5. If the user selects ``Yes`` the system:
+5. If the user sends the ``/direct-poll publish|poll_id`` slash command the system:
 
    a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
  
