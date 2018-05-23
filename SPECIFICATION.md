@@ -58,10 +58,12 @@ Markdown formatted help for the slash command is available by executing the ``/d
    
    [Answer], [Answer], ...
    
-   If that is correct and you wish to publish the poll use the following slash command to publish it:
+   If that is correct and you wish to publish the poll use the following slash command 
+   to publish it:
    /direct-poll publish|poll_id
    
-   If you wish to cancel the poll and start over use the following slash command (note the poll will be deleted from the database:
+   If you wish to cancel the poll and start over use the following slash command (note that
+   the poll will be deleted from the database:
    /direct-poll cancel|poll_id
    ```
    
