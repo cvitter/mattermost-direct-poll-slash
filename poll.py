@@ -8,41 +8,46 @@ poll.py
 
 """
 
+"""
+Read the config.json file and populate global variables
+"""
 def readConfig():
-    """
-    Read the config.json file and populate global variables
-    """
-    # Create global configuration variables
     global token, dbUrl, dbUsername, dbPassword
-    # Load the file contents as JSON
+    global errorColor, alertColor, questionColor
+    
     d = json.load( open('config.json') )
-    # Set globals
+    
     token = d["security"]["token"]
     dbUrl = d["database"]["url"]
     dbUsername = d["database"]["user"]
     dbPassword = d["database"]["password"]
+    errorColor = d["colors"]["error"]
+    alertColor = d["colors"]["alert"]
+    questionColor = d["colors"]["question"]
     
 
+"""
+Retrieve help from the help.txt file and return
+"""
 def getHelp():
-    """
-    Retrieve help from the help.txt file and return
-    """
-    responseValue = open('help.txt').read()
-    return responseValue
+    return open('help.txt').read()
     
 
-def createReponseObject( response_type_val, content, status_number ):
-    """
-    Method that takes:
-        - response_type_val: ephemeral, in_channel 
-        - content: The text to respond with - can be formatted with markdown
-        - HTTP response code: 200 normally, 403 access denied, etc.
-    And outputs the response object to send back to Mattermost
-    """
-    data = {
-        "response_type": response_type_val,
-        "text": content,
-    }
+"""
+"""
+def createReponseObject( response_type_val, text_content, attachement_content, status_number ):
+
+    if len( attachement_content ) > 0:
+        data = {
+            "response_type": response_type_val,
+            "text": text_content,
+            "attachments" : [ attachement_content ]
+        }
+    else:
+        data = {
+            "response_type": response_type_val,
+            "text": text_content
+        }
 
     responseObj = app.response_class(
         response = json.dumps( data ),
@@ -52,8 +57,11 @@ def createReponseObject( response_type_val, content, status_number ):
     return responseObj
 
 
+"""
+"""
 def handleActions( form_data ):
     response_type = "ephemeral"
+    text_value = ""
     
     paramstring = form_data["text"]
     token_sent = form_data["token"]
@@ -62,14 +70,27 @@ def handleActions( form_data ):
     team_id = form_data["team_id"]
     user_id = form_data["user_id"]
     user_name = form_data["user_name"]
-
-    return createReponseObject( response_type, "Handle actions called " + user_name, 200 )
+    
+    params = paramstring.split("|") 
+    
+    if params[0] == "create":
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+    elif params[0] == "publish":
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+    elif params[0] == "cancel":
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+    elif params[0] == "view":
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+    elif params[0] == "close":
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+    else:
+        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command does not exist." }
+    
+    return createReponseObject( response_type, text_value, attachment_dict, 200 )
 
 
 def getPolls():
-    response_type = "ephemeral"
-
-    return createReponseObject( response_type, "Polls go here...", 200 )
+    return createReponseObject( "ephemeral", "Polls go here...", "", 200 )
 
 """
 ------------------------------------------------------------------------------------------
@@ -85,11 +106,11 @@ def slashCommand():
     
     if len( request.form ) < 1:
         # No data passed in via request.form
-        return createReponseObject("ephemeral", "Bad Request", 400)
+        return createReponseObject("ephemeral", "Bad Request", "", 400)
     
     if token <> request.form["token"]:
         #The token in config.json must match the token sent
-        return createReponseObject("ephemeral", "Access Denied", 403)
+        return createReponseObject("ephemeral", "Access Denied", "", 403)
     
     if len( request.form["text"] ) > 0:
         # User passed arguments in, parse the arguments and take action
@@ -103,7 +124,7 @@ def slashCommand():
     """
     If we reach this stage simply return the help response to the user
     """
-    return createReponseObject( "ephemeral", getHelp(), 200 )
+    return createReponseObject( "ephemeral", getHelp(), "", 200 )
  
 if __name__ == '__main__':
    app.run(host='0.0.0.0', port=5005, debug = False)

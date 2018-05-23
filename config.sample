@@ -6,5 +6,10 @@
 		"url" : "",
 		"user" : "",
 		"password" : ""
+	},
+	"colors" : {
+		"error" : "#ff0000",
+		"alert" : "#ffff00",
+		"question" : "#ffff00"
 	}
 }
