@@ -47,7 +47,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    +--------------------+---------------+------+-----+-------------------+-----------------------------+
    ```
    
-3. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
+3. The system creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
  
    ```  
    +----------------+--------------+------+-----+-------------------+-----------------------------+
