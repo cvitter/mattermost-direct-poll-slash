@@ -50,7 +50,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
 3. The system returns an ephemeral  message asking the user to confirm that they wish to run the poll that they created:
 
    ```
-   You want to publish a poll for all uses in [Team/Channel] that asks:
+   You want to publish a poll for all users in [Team/Channel] that asks:
    
    [Question]
    

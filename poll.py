@@ -8,10 +8,11 @@ poll.py
 
 """
 
-"""
-Read the config.json file and populate global variables
-"""
+
 def readConfig():
+    """
+    Read the config.json file and populate global variables
+    """
     global token, dbUrl, dbUsername, dbPassword
     global errorColor, alertColor, questionColor
     
@@ -26,17 +27,17 @@ def readConfig():
     questionColor = d["colors"]["question"]
     
 
-"""
-Retrieve help from the help.txt file and return
-"""
+
 def getHelp():
+    """
+    Retrieve help from the help.txt file and return
+    """
     return open('help.txt').read()
     
 
-"""
-"""
 def createReponseObject( response_type_val, text_content, attachement_content, status_number ):
-
+    """
+    """
     if len( attachement_content ) > 0:
         data = {
             "response_type": response_type_val,
@@ -57,9 +58,41 @@ def createReponseObject( response_type_val, text_content, attachement_content, s
     return responseObj
 
 
-"""
-"""
+
+def getChannelId(channel_display_name):
+    """
+    TODO: Implement this...
+    """
+    return channel_id
+
+
+def createPoll(question, answers, channel):
+    """
+    """
+    answer_arr = answers.split("/")
+    answer_str = "[" + answers.replace("/","] [") + "]"
+        
+    message = "You want to publish a poll for all users in [Team/Channel] that asks:\n" + \
+              "* " + question + "\n" + \
+              "\n" + \
+              "And has the following possible answers:\n" + \
+              "* " + answer_str + "\n" \
+              "\n" + \
+              "To publish the poll please enter: ``/direct-poll publish|[poll-id]``\n" + \
+              "To cancel the poll please enter: ``/direct-poll cancel|[poll-id]``\n"
+              
+    
+    reponse_dict = { 
+        "color": questionColor, 
+        "text": message #json.dumps( message )
+    }
+    
+    return reponse_dict
+
+
 def handleActions( form_data ):
+    """
+    """
     response_type = "ephemeral"
     text_value = ""
     
@@ -74,7 +107,7 @@ def handleActions( form_data ):
     params = paramstring.split("|") 
     
     if params[0] == "create":
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+        attachment_dict = createPoll( params[1], params[2], "" )
     elif params[0] == "publish":
         attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
     elif params[0] == "cancel":
