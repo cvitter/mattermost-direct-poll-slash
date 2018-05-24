@@ -4,6 +4,7 @@
 	},
 	"database" : {
 		"url" : "",
+		"database" : "directpoll",
 		"user" : "",
 		"password" : ""
 	},
