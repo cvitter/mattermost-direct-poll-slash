@@ -46,8 +46,23 @@ Markdown formatted help for the slash command is available by executing the ``/d
    | closed             | tinyint(1)    | NO   |     | 0                 |                             |
    +--------------------+---------------+------+-----+-------------------+-----------------------------+
    ```
+   
+3. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
+ 
+   ```  
+   +----------------+--------------+------+-----+-------------------+-----------------------------+
+   | Field          | Type         | Null | Key | Default           | Extra                       |
+   +----------------+--------------+------+-----+-------------------+-----------------------------+
+   | poll_result_id | int(11)      | NO   | PRI | NULL              | auto_increment              |
+   | poll_id        | int(11)      | NO   |     | NULL              |                             |
+   | created        | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+   | updated        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                             |
+   | answer         | varchar(100) | YES  |     | NULL              |                             |
+   | votes          | int(11)      | NO   |     | 0                 |                             |
+   +----------------+--------------+------+-----+-------------------+-----------------------------+
+   ```
 
-3. The system returns an ephemeral  message asking the user to confirm that they wish to run the poll that they created:
+4. The system returns an ephemeral  message asking the user to confirm that they wish to run the poll that they created:
 
    ```
    You want to publish a poll for all users in [Team/Channel] that asks:
@@ -67,32 +82,17 @@ Markdown formatted help for the slash command is available by executing the ``/d
    /direct-poll cancel|poll_id
    ```
    
-4. If the user sends the ``/direct-poll cancel|poll_id`` slash command the system deletes the record in the ``poll`` table created in ``Step 2`` above and returns an ephemeral message alerting the user that the poll has been canceled.
+5. If the user sends the ``/direct-poll cancel|poll_id`` slash command the system deletes the record in the ``poll`` table created in ``Step 2`` above and returns an ephemeral message alerting the user that the poll has been canceled.
 
    ```
    Alert: The poll has been canceled.
    ```
 
-5. If the user sends the ``/direct-poll publish|poll_id`` slash command the system:
-
-   a. Creates a record for each answer in the poll in the ``poll_result`` table with the following fields: ``poll_result_id, poll_id, created, updated, answer, votes`` (where the ``votes`` field is set to ``0`` intitially);
- 
-   ```  
-   +----------------+--------------+------+-----+-------------------+-----------------------------+
-   | Field          | Type         | Null | Key | Default           | Extra                       |
-   +----------------+--------------+------+-----+-------------------+-----------------------------+
-   | poll_result_id | int(11)      | NO   | PRI | NULL              | auto_increment              |
-   | poll_id        | int(11)      | NO   |     | NULL              |                             |
-   | created        | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
-   | updated        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                             |
-   | answer         | varchar(100) | YES  |     | NULL              |                             |
-   | votes          | int(11)      | NO   |     | 0                 |                             |
-   +----------------+--------------+------+-----+-------------------+-----------------------------+
-   ```
+6. If the user sends the ``/direct-poll publish|poll_id`` slash command the system:
    
-   b. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
+   a. Retrieves a list of each active user in the Team or Channel who will receive the poll using the Mattermost API (https://api.mattermost.com/#tag/users%2Fpaths%2F~1users%2Fget);
    
-   c. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, created, updated, user_id, answer`` (where the ``answer`` field is set to ``null`` intitially);
+   b. Creates a record for each user who will participate in the poll in the ``poll_answer`` table with the following fields: ``poll_answer_id, poll_id, created, updated, user_id, answer`` (where the ``answer`` field is set to ``null`` intitially);
    
    ```
    +----------------+--------------+------+-----+-------------------+-----------------------------+
@@ -107,7 +107,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    +----------------+--------------+------+-----+-------------------+-----------------------------+
    ```
    
-   d. Sends a message with a message attachment and interactive message buttons via incoming webhook (https://docs.mattermost.com/developer/webhooks-incoming.html) to each user in the ``poll_answer`` table for the poll:
+   c. Sends a message with a message attachment and interactive message buttons via incoming webhook (https://docs.mattermost.com/developer/webhooks-incoming.html) to each user in the ``poll_answer`` table for the poll:
    
    ```
    Please answer the following poll question:
@@ -117,7 +117,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    [Answer], [Answer], ...
    ```
    
-   e. Returns an ephemeral message alerting the user that the poll has been published.
+   d. Returns an ephemeral message alerting the user that the poll has been published.
 
    ```
    Alert: The poll has been published. You can view the results for the poll using the 
