@@ -24,7 +24,7 @@ Markdown formatted help for the slash command is available by executing the ``/d
    ```
    /direct-poll create|Have you completed your monthly HR training yet?|Yes/No/Maybe|[Yes or No]
    ```
-   The slash commands takes four arguments separated by the pipe character (``|``): The command to execute (``create``), the question, possible answers (separated by the forward slash character (``/``), and optionally ``Yes`` or ``No`` where ``Yes`` specifies that the poll will only query members of the channel that the poll was created in (as opposed to the entire team.
+   The slash commands takes four arguments separated by the pipe character (``|``): The command to execute (``create``), the question, possible answers (separated by the forward slash character (``/``), and optionally ``Yes`` or ``No`` where ``Yes`` specifies that the poll will only query members of the channel that the poll was created in (as opposed to the entire team).
 
 2. The system creates a database record in the ``poll`` table with the following fields: ``poll_id, created, team_id, channel_id, token, user_id, user_name, question, answers, channel_to_poll_id, published, closed``.
 
