@@ -10,6 +10,6 @@
 	"colors" : {
 		"error" : "#ff0000",
 		"alert" : "#ffff00",
-		"question" : "#ffff00"
+		"question" : "#28c12b"
 	}
 }
