@@ -61,12 +61,3 @@ def createPollResultRecord( dbUrl, dbUser, dbPassword, dbName, poll_id, answer )
     db.close()    
     return out
 
-
-"""
-poll_id = createPollRecord( "52.173.76.156", "dpuser", "dp_!4312+", "directpoll", 
-                            "team-id", "channel-id", "token", "user-id", "user-name", "Question?", "Answer, Answer, Answer", "" )
-print "Poll ID: " + str( poll_id )
-
-poll_result_id = createPollResultRecord( "52.173.76.156", "dpuser", "dp_!4312+", "directpoll", poll_id, "Answer!")
-print "Poll Result ID: " + str( poll_result_id )
-"""
