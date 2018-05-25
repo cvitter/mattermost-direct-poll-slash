@@ -13,13 +13,14 @@ def readConfig():
     """
     Read the config.json file and populate global variables
     """
-    global token, dbUrl, dbUsername, dbPassword
+    global token, dbUrl, dbName, dbUsername, dbPassword
     global errorColor, alertColor, questionColor
     
     d = json.load( open('config.json') )
     
     token = d["security"]["token"]
     dbUrl = d["database"]["url"]
+    dbName = d["database"]["database"]
     dbUsername = d["database"]["user"]
     dbPassword = d["database"]["password"]
     errorColor = d["colors"]["error"]
@@ -58,15 +59,8 @@ def createReponseObject( response_type_val, text_content, attachement_content, s
     return responseObj
 
 
-
-def getChannelId(channel_display_name):
-    """
-    TODO: Implement this...
-    """
-    return channel_id
-
-
-def createPoll(question, answers, channel):
+def createPoll( team_id, channel_id, token, user_id, user_name, 
+                question, answers, channel_to_poll_id ):
     """
     """
     answer_arr = answers.split("/")
@@ -107,7 +101,20 @@ def handleActions( form_data ):
     params = paramstring.split("|") 
     
     if params[0] == "create":
-        attachment_dict = createPoll( params[1], params[2], "" )
+        if len(params) == 4:
+            """
+            Check whether this is channel specific or not
+            """
+            poll_channel = ""
+            if params[3].lower() == "yes":
+                channel_to_poll = channel_id
+                
+            attachment_dict = createPoll( team_id, channel_id, token_sent, user_id, user_name,
+                                          params[1], params[2], channel_to_poll )
+        else:
+            attachment_dict = createPoll( team_id, channel_id, token_sent, user_id, user_name,
+                                          params[1], params[2], "" )
+            
     elif params[0] == "publish":
         attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
     elif params[0] == "cancel":
