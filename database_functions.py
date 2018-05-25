@@ -8,6 +8,33 @@ def connect( url, user, password, database ):
     return db
 
 
+def cancelPollRecord( dbUrl, dbUser, dbPassword, dbName, poll_id ):
+    """
+    Deletes the poll record if it has not been published, published records cannot be deleted
+    """
+    db = connect(  dbUrl, dbUser, dbPassword, dbName )
+    cursor = db.cursor()
+    
+    sqlDeletePoll = "DELETE FROM poll WHERE poll_id = " + str( poll_id ) + " AND published = 0"
+    sqlDeletePollResult = "DELETE FROM poll_result WHERE poll_id = " + str( poll_id ) 
+    
+    rows_affected = 0
+    try:
+        cursor.execute( sqlDeletePoll )
+        db.commit()
+        rows_affected = cursor.rowcount
+        
+        if rows_affected > 0:
+            cursor.execute( sqlDeletePollResult )
+            db.commit()
+            rows_affected = rows_affected + cursor.rowcount
+    except:
+        rows_affected = 0
+    
+    db.close()
+    return rows_affected
+    
+
 def createPollRecord( dbUrl, dbUser, dbPassword, dbName, 
                       team_id, channel_id, token, user_id, user_name, question, answers, channel_to_poll_id):
     """
