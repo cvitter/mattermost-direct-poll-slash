@@ -3,6 +3,8 @@ from flask import request
 import json
 import requests
 
+from database_functions import createPollRecord, createPollResultRecord
+
 __doc__ = """\
 poll.py
 
@@ -30,9 +32,6 @@ def readConfig():
 
 
 def getHelp():
-    """
-    Retrieve help from the help.txt file and return
-    """
     return open('help.txt').read()
     
 
@@ -63,22 +62,33 @@ def createPoll( team_id, channel_id, token, user_id, user_name,
                 question, answers, channel_to_poll_id ):
     """
     """
+    outColor = questionColor
+    
     answer_arr = answers.split("/")
     answer_str = "[" + answers.replace("/","] [") + "]"
-        
-    message = "You want to publish a poll for all users in [Team/Channel] that asks:\n" + \
+    
+    poll_id = createPollRecord( dbUrl, dbUsername, dbPassword, dbName, 
+                            team_id, channel_id, token, user_id, user_name, question, answers, channel_to_poll_id )
+    
+    if poll_id > 0:
+        for answer in answer_arr:
+            poll_result_id = createPollResultRecord( dbUrl, dbUsername, dbPassword, dbName, poll_id, answer )
+    
+        message = "You want to publish a poll for all users in [Team/Channel] that asks:\n" + \
               "* " + question + "\n" + \
               "\n" + \
               "And has the following possible answers:\n" + \
               "* " + answer_str + "\n" \
               "\n" + \
-              "To publish the poll please enter: ``/direct-poll publish|[poll-id]``\n" + \
-              "To cancel the poll please enter: ``/direct-poll cancel|[poll-id]``\n"
-              
+              "To publish the poll please enter: ``/direct-poll publish|" + str( poll_id ) + "``\n" + \
+              "To cancel the poll please enter: ``/direct-poll cancel|" + str( poll_id ) + "``\n"
+    else:
+        outColor = errorColor
+        message = "**Error**: Your poll could not be created." 
     
     reponse_dict = { 
-        "color": questionColor, 
-        "text": message #json.dumps( message )
+        "color": outColor, 
+        "text": message
     }
     
     return reponse_dict
@@ -116,15 +126,15 @@ def handleActions( form_data ):
                                           params[1], params[2], "" )
             
     elif params[0] == "publish":
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+        attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command has not yet been implemented." }
     elif params[0] == "cancel":
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+        attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command has not yet been implemented." }
     elif params[0] == "view":
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+        attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command has not yet been implemented." }
     elif params[0] == "close":
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command has not yet been implemented." }
+        attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command has not yet been implemented." }
     else:
-        attachment_dict = { "color": errorColor, "text": "Error: The " + params[0] + " command does not exist." }
+        attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command does not exist." }
     
     return createReponseObject( response_type, text_value, attachment_dict, 200 )
 
