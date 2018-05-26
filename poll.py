@@ -58,7 +58,7 @@ def createReponseObject( response_type_val, text_content, attachement_content, s
 
 
 def createPoll( team_id, channel_id, token, user_id, user_name, 
-                question, answers, channel_to_poll_id ):
+                question, answers, channel_to_poll_id, channel_name ):
     """
     """
     outColor = successColor
@@ -72,7 +72,12 @@ def createPoll( team_id, channel_id, token, user_id, user_name,
         for answer in answer_arr:
             poll_result_id = createPollResultRecord( dbUrl, dbUsername, dbPassword, dbName, poll_id, answer )
     
-        message = "You want to publish a poll for all users in [Team/Channel] that asks:\n" + \
+        # Add channel name into message
+        channel_to_print = ""
+        if len( channel_to_poll_id ) > 0:
+            channel_to_print = "in " + channel_name + " " 
+            
+        message = "You want to publish a poll for all users " + channel_to_print + "that asks:\n" + \
               "* " + question + "\n" + \
               "\n" + \
               "And has the following possible answers:\n" + \
@@ -102,7 +107,7 @@ def cancelPoll( poll_id ):
     else:
         reponse_dict = { 
             "color": errorColor, 
-            "text": "Poll " + poll_id + " could not canceled."
+            "text": "Poll " + poll_id + " could not be canceled."
         }
     return reponse_dict
 
@@ -133,10 +138,10 @@ def handleActions( form_data ):
                 channel_to_poll = channel_id
                 
             attachment_dict = createPoll( team_id, channel_id, token_sent, user_id, user_name,
-                                          params[1], params[2], channel_to_poll )
+                                          params[1], params[2], channel_to_poll, channel_name )
         else:
             attachment_dict = createPoll( team_id, channel_id, token_sent, user_id, user_name,
-                                          params[1], params[2], "" )
+                                          params[1], params[2], "", "" )
             
     elif params[0] == "publish":
         attachment_dict = { "color": errorColor, "text": "**Error**: The " + params[0] + " command has not yet been implemented." }
