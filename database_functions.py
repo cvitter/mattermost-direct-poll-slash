@@ -7,6 +7,19 @@ def connect( url, user, password, database ):
     db = MySQLdb.connect( host = url, user = user, passwd = password, db=database)
     return db
 
+def getAllPolls():
+    
+    sqlSelect = "SELECT poll_id, created, team_id, user_name, question, answers, " +\
+                "channel_to_poll_id, published, closed FROM poll ORDER BY poll_id DESC;"
+                
+    db = connect(  dbUrl, dbUser, dbPassword, dbName )
+    cursor = db.cursor()
+    
+    cursor.execute( sqlSelect )
+    for ( poll_id, created, team_id, user_name, question, answers, channel_to_poll_id, published, closed ) in cursor:
+        str = ""
+                    
+    return 0
 
 def cancelPollRecord( dbUrl, dbUser, dbPassword, dbName, poll_id ):
     """

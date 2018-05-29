@@ -158,6 +158,8 @@ def handleActions( form_data ):
 
 
 def getPolls():
+    
+    
     return createReponseObject( "ephemeral", "Polls go here...", "", 200 )
 
 """
