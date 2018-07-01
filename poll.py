@@ -2,33 +2,35 @@ from flask import Flask
 from flask import request
 import json
 import requests
-from database_functions import createPollRecord, createPollResultRecord, cancelPollRecord
+from database_functions import create_poll_record
+from database_functions import create_poll_result_record
+from database_functions import cancel_poll_record
 
 
-def readConfig():
+def read_config():
     """
     Read the config.json file and populate global variables
     """
-    global token, dbUrl, dbName, dbUsername, dbPassword
-    global errorColor, alertColor, successColor
+    global token, db_url, db_name, db_username, db_password
+    global error_color, alert_color, success_color
 
     d = json.load(open('config.json'))
     token = d["security"]["token"]
-    dbUrl = d["database"]["url"]
-    dbName = d["database"]["database"]
-    dbUsername = d["database"]["user"]
-    dbPassword = d["database"]["password"]
-    errorColor = d["colors"]["error"]
-    alertColor = d["colors"]["alert"]
-    successColor = d["colors"]["success"]
+    db_url = d["database"]["url"]
+    db_name = d["database"]["database"]
+    db_username = d["database"]["user"]
+    db_password = d["database"]["password"]
+    error_color = d["colors"]["error"]
+    alert_color = d["colors"]["alert"]
+    success_color = d["colors"]["success"]
 
 
-def getHelp():
+def get_help():
     return open('help.txt').read()
 
 
-def createReponseObject(response_type_val, text_content, attachement_content,
-                        status_number):
+def create_reponse_object(response_type_val, text_content, attachement_content,
+                          status_number):
     """
     """
     if len(attachement_content) > 0:
@@ -43,32 +45,32 @@ def createReponseObject(response_type_val, text_content, attachement_content,
             "text": text_content
         }
 
-    responseObj = app.response_class(
+    response_obj = app.response_class(
         response=json.dumps(data),
         status=status_number,
         mimetype='application/json'
     )
-    return responseObj
+    return response_obj
 
 
-def createPoll(team_id, channel_id, token, user_id, user_name,
-               question, answers, channel_to_poll_id, channel_name):
+def create_poll(team_id, channel_id, token, user_id, user_name,
+                question, answers, channel_to_poll_id, channel_name):
     """
     """
-    outColor = successColor
+    out_color = success_color
     answer_arr = answers.split("/")
     answer_str = "[" + answers.replace("/", "] [") + "]"
 
-    poll_id = createPollRecord(dbUrl, dbUsername, dbPassword, dbName,
-                               team_id, channel_id, token, user_id,
-                               user_name, question, answers,
-                               channel_to_poll_id)
+    poll_id = create_poll_record(db_url, db_username, db_password, db_name,
+                                 team_id, channel_id, token, user_id,
+                                 user_name, question, answers,
+                                 channel_to_poll_id)
 
     if poll_id > 0:
         for answer in answer_arr:
-            poll_result_id = createPollResultRecord(dbUrl, dbUsername,
-                                                    dbPassword, dbName,
-                                                    poll_id, answer)
+            poll_result_id = create_poll_result_record(db_url, db_username,
+                                                       db_password, db_name,
+                                                       poll_id, answer)
 
         # Add channel name into message
         channel_to_print = ""
@@ -87,34 +89,34 @@ def createPoll(team_id, channel_id, token, user_id, user_name,
             "To cancel the poll please enter: ``/direct-poll cancel|" + \
             str(poll_id) + "``\n"
     else:
-        outColor = errorColor
+        out_color = error_eolor
         message = "**Error**: Your poll could not be created."
 
     reponse_dict = {
-        "color": outColor,
+        "color": out_color,
         "text": message
     }
     return reponse_dict
 
 
-def cancelPoll(poll_id):
-    rows_deleted = cancelPollRecord(dbUrl, dbUsername, dbPassword,
-                                    dbName, poll_id)
+def cancel_poll(poll_id):
+    rows_deleted = cancel_poll_record(db_url, db_username, db_password,
+                                      db_name, poll_id)
 
     if rows_deleted > 0:
         reponse_dict = {
-            "color": successColor,
+            "color": success_color,
             "text": "Poll " + poll_id + " has been canceled."
         }
     else:
         reponse_dict = {
-            "color": errorColor,
+            "color": error_color,
             "text": "Poll " + poll_id + " could not be canceled."
         }
     return reponse_dict
 
 
-def handleActions(form_data):
+def handle_actions(form_data):
     """
     """
     response_type = "ephemeral"
@@ -139,70 +141,70 @@ def handleActions(form_data):
             if params[3].lower() == "yes":
                 channel_to_poll = channel_id
 
-            attachment_dict = createPoll(team_id, channel_id, token_sent,
-                                         user_id, user_name, params[1],
-                                         params[2], channel_to_poll,
-                                         channel_name)
+            attachment_dict = create_poll(team_id, channel_id, token_sent,
+                                          user_id, user_name, params[1],
+                                          params[2], channel_to_poll,
+                                          channel_name)
         else:
-            attachment_dict = createPoll(team_id, channel_id, token_sent,
-                                         user_id, user_name, params[1],
-                                         params[2], "", "")
+            attachment_dict = create_poll(team_id, channel_id, token_sent,
+                                          user_id, user_name, params[1],
+                                          params[2], "", "")
 
     elif params[0] == "publish":
-        attachment_dict = {"color": errorColor, "text": "**Error**: The " +
+        attachment_dict = {"color": error_color, "text": "**Error**: The " +
                            params[0] + " command has not yet been implemented."}
     elif params[0] == "cancel":
-        attachment_dict = cancelPoll(params[1])
+        attachment_dict = cancel_poll(params[1])
     elif params[0] == "view":
-        attachment_dict = {"color": errorColor, "text": "**Error**: The " +
+        attachment_dict = {"color": error_color, "text": "**Error**: The " +
                            params[0] + " command has not yet been implemented."}
     elif params[0] == "close":
-        attachment_dict = {"color": errorColor, "text": "**Error**: The " +
+        attachment_dict = {"color": error_color, "text": "**Error**: The " +
                            params[0] + " command has not yet been implemented."}
     else:
-        attachment_dict = {"color": errorColor, "text": "**Error**: The " +
+        attachment_dict = {"color": error_color, "text": "**Error**: The " +
                            params[0] + " command does not exist."}
 
-    return createReponseObject(response_type, text_value, attachment_dict, 200)
+    return create_reponse_object(response_type, text_value, attachment_dict, 200)
 
 
-def getPolls():
-    return createReponseObject("ephemeral", "Polls go here...", "", 200)
+def get_polls():
+    return create_reponse_object("ephemeral", "Polls go here...", "", 200)
 
 """
 ------------------------------------------------------------------------------------------
 Flask application below
 """
 
-readConfig()
+read_config()
 
 app = Flask(__name__)
 
 
 @app.route("/direct-poll", methods=['POST'])
-def slashCommand():
+def slash_command():
 
     if len(request.form) < 1:
         # No data passed in via request.form
-        return createReponseObject("ephemeral", "Bad Request", "", 400)
+        return create_reponse_object("ephemeral", "Bad Request", "", 400)
 
     if token != request.form["token"]:
         # The token in config.json must match the token sent
-        return createReponseObject("ephemeral", "Access Denied", "", 403)
+        return create_reponse_object("ephemeral", "Access Denied", "", 403)
 
     if len(request.form["text"]) > 0:
         # User passed arguments in, parse the arguments and take action
         if request.form["text"].find("|") != -1:
             # Multiple arguments separated by | passed in, send action handler
-            return handleActions(request.form)
+            return handle_actions(request.form)
         else:
             if request.form["text"] == "list":
-                return getPolls()
+                return get_polls()
 
     """
     If we reach this stage simply return the help response to the user
     """
-    return createReponseObject("ephemeral", getHelp(), "", 200)
+    return create_reponse_object("ephemeral", get_help(), "", 200)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5005, debug=False)
